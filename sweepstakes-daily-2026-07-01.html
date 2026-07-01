@@ -84,16 +84,33 @@ a{color:var(--accent);text-decoration:none;}a:hover{text-decoration:underline;}
 .dara-badge.active{background:#fff7ed;color:#9a3412;border-color:#fdba74;}
 .dara-badge.blocked{background:#f0fdf4;color:#166534;border-color:#86efac;}
 /* competitor watch panel */
-.comp-watch{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;}
-.comp-watch h2{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--text);}
-.comp-grid{display:flex;flex-wrap:wrap;gap:6px;}
-.comp-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:#f8fafc;color:var(--muted);}
-.comp-chip.active{background:#fff;border-color:#94a3b8;color:var(--text);}
+.comp-watch{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:16px;}
+.comp-watch-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.comp-watch-hdr-left{display:flex;flex-direction:column;gap:2px;}
+.comp-watch-title{font-size:15px;font-weight:700;color:var(--text);}
+.comp-watch-sub{font-size:12px;color:var(--muted);}
+.comp-filter-btns{display:flex;gap:4px;}
+.comp-filter-btn{padding:3px 10px;border-radius:5px;border:1px solid var(--border);font-size:11px;cursor:pointer;background:#f8fafc;color:var(--muted);}
+.comp-filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.comp-tier-section{margin-bottom:10px;}
+.comp-tier-section:last-of-type{margin-bottom:0;}
+.comp-tier-hdr{display:flex;align-items:center;gap:8px;border-left:3px solid #cbd5e1;padding-left:10px;margin-bottom:8px;}
+.comp-tier-hdr.has-active{border-color:var(--accent);}
+.comp-tier-name{font-size:13px;font-weight:600;color:var(--text);}
+.comp-active-badge{font-size:11px;padding:1px 8px;border-radius:10px;background:#e2e8f0;color:var(--muted);}
+.comp-active-badge.has-active{background:#dcfce7;color:#166534;}
+.comp-tier-toggle{margin-left:auto;font-size:11px;color:var(--muted);cursor:pointer;user-select:none;padding:2px 6px;border-radius:4px;border:1px solid var(--border);}
+.comp-tier-toggle:hover{background:var(--bg);}
+.comp-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.comp-chips.collapsed{display:none;}
+.comp-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:#f8fafc;color:var(--muted);}
+.comp-chip.active{background:#fff;color:var(--text);cursor:pointer;}
 .comp-chip.active.threat-critical{border-color:var(--critical);background:#fce7e7;color:#7f1d1d;}
 .comp-chip.active.threat-high{border-color:var(--high);background:#fef2f2;color:#991b1b;}
 .comp-chip.active.threat-medium{border-color:var(--med);background:#fff7ed;color:#9a3412;}
-.comp-chip .comp-tier{font-size:10px;opacity:.6;}
-.comp-sep{width:100%;height:0;border:none;border-top:1px solid var(--border);margin:4px 0;}
+.comp-chip.active.threat-low{border-color:var(--low);background:#f0fdf4;color:#166534;}
+.comp-chip-count{font-weight:700;font-size:11px;}
+.comp-legend{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-top:12px;border-top:1px solid var(--border);padding-top:8px;}
 /* advice box */
 .advice-box{background:#f0f4ff;border:1px solid #a5b4fc;border-radius:10px;padding:14px;margin-bottom:16px;}
 .advice-box h2{font-size:14px;font-weight:700;margin-bottom:8px;color:#3730a3;}
@@ -145,8 +162,21 @@ body.lang-en [data-en]{display:inline;}
 </div>
 <!-- competitor watch -->
 <div class="comp-watch" id="compWatch">
-<h2>🏆 <span data-zh="">競品動態雷達</span><span data-en="">Competitor Watch</span></h2>
-<div class="comp-grid" id="compGrid"><div class="comp-chip"><span>⚪</span><span>VGW</span><span class="comp-tier">競品</span></div><div class="comp-chip"><span>⚪</span><span>Stake.us</span><span class="comp-tier">競品</span></div><div class="comp-chip"><span>⚪</span><span>CrownCoins</span><span class="comp-tier">競品</span></div><div class="comp-chip"><span>⚪</span><span>Pulsz</span><span class="comp-tier">競品</span></div><div class="comp-chip active threat-low"><span>🟢</span><span>McLuck</span><span style="font-weight:700;">(2)</span><span class="comp-tier">競品</span></div><div class="comp-chip"><span>⚪</span><span>WOW Vegas</span><span class="comp-tier">競品</span></div><div class="comp-chip"><span>⚪</span><span>Sportzino</span><span class="comp-tier">競品</span></div><div class="comp-chip"><span>⚪</span><span>Fortune Coins</span><span class="comp-tier">競品</span></div><div class="comp-chip"><span>⚪</span><span>High5 Casino</span><span class="comp-tier">競品</span></div><div class="comp-sep"></div><div class="comp-chip"><span>⚪</span><span>RealPlay</span><span class="comp-tier">客戶</span></div><div class="comp-chip"><span>⚪</span><span>LavishLuck</span><span class="comp-tier">客戶</span></div><div class="comp-chip"><span>⚪</span><span>Funrize</span><span class="comp-tier">客戶</span></div><div class="comp-sep"></div><div class="comp-chip"><span>⚪</span><span>Pragmatic Play</span><span class="comp-tier">供應商</span></div><div class="comp-chip"><span>⚪</span><span>AGS</span><span class="comp-tier">供應商</span></div></div>
+<div class="comp-watch-hdr">
+<div class="comp-watch-hdr-left">
+<span class="comp-watch-title">🏆 <span data-zh="">競品動態雷達</span><span data-en="">Competitor Watch</span></span>
+<span class="comp-watch-sub" id="compSubtitle">今日 1 家有新動態</span>
+</div>
+<div class="comp-filter-btns">
+<button class="comp-filter-btn active" id="compBtnAll" onclick="compFilter('all')"><span data-zh="">全部</span><span data-en="">All</span></button>
+<button class="comp-filter-btn" id="compBtnActive" onclick="compFilter('active')"><span data-zh="">僅有動態</span><span data-en="">Active only</span></button>
+</div>
+</div>
+<div id="compGrid"><div class="comp-tier-section" data-active="1" data-tier="operator"><div class="comp-tier-hdr has-active"><span class="comp-tier-name" data-zh="">競品</span><span class="comp-tier-name" data-en="">Competitors</span><span class="comp-active-badge has-active"><span data-zh="">1/9 活躍</span><span data-en="">1/9 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">收合</span><span data-en="">Collapse</span></span></div><div class="comp-chips"><div class="comp-chip" data-comp="VGW"><span>VGW</span></div><div class="comp-chip" data-comp="Stake.us"><span>Stake.us</span></div><div class="comp-chip" data-comp="CrownCoins"><span>CrownCoins</span></div><div class="comp-chip" data-comp="Pulsz"><span>Pulsz</span></div><div class="comp-chip active threat-low" data-comp="McLuck"><span>McLuck</span><span>🟢</span><span class="comp-chip-count">2</span></div><div class="comp-chip" data-comp="WOW Vegas"><span>WOW Vegas</span></div><div class="comp-chip" data-comp="Sportzino"><span>Sportzino</span></div><div class="comp-chip" data-comp="Fortune Coins"><span>Fortune Coins</span></div><div class="comp-chip" data-comp="High5 Casino"><span>High5 Casino</span></div></div></div><div class="comp-tier-section" data-active="0" data-tier="client"><div class="comp-tier-hdr"><span class="comp-tier-name" data-zh="">客戶</span><span class="comp-tier-name" data-en="">Clients</span><span class="comp-active-badge"><span data-zh="">0/3 活躍</span><span data-en="">0/3 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">展開</span><span data-en="">Expand</span></span></div><div class="comp-chips collapsed"><div class="comp-chip" data-comp="RealPlay"><span>RealPlay</span></div><div class="comp-chip" data-comp="LavishLuck"><span>LavishLuck</span></div><div class="comp-chip" data-comp="Funrize"><span>Funrize</span></div></div></div><div class="comp-tier-section" data-active="0" data-tier="supplier"><div class="comp-tier-hdr"><span class="comp-tier-name" data-zh="">供應商</span><span class="comp-tier-name" data-en="">Suppliers</span><span class="comp-active-badge"><span data-zh="">0/2 活躍</span><span data-en="">0/2 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">展開</span><span data-en="">Expand</span></span></div><div class="comp-chips collapsed"><div class="comp-chip" data-comp="Pragmatic Play"><span>Pragmatic Play</span></div><div class="comp-chip" data-comp="AGS"><span>AGS</span></div></div></div></div>
+<div class="comp-legend">
+<span>🔴 <span data-zh="">高威脅</span><span data-en="">High</span>  🟠 <span data-zh="">中威脅</span><span data-en="">Medium</span>  🟢 <span data-zh="">低威脅</span><span data-en="">Low</span></span>
+<span data-zh="">數字 = 今日動態則數</span><span data-en="">Number = today's mentions</span>
+</div>
 </div>
 <!-- filter bar -->
 <div class="filter-bar" id="filterBar">
@@ -177,7 +207,7 @@ body.lang-en [data-en]{display:inline;}
 <div class="news-grid" data-section="product" id="productGrid"><div class="news-card" data-category="product" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-product"><span data-zh="">產品</span><span data-en="">Product</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxOWWhuSVFodkdHbWt0MTBMeVU3ODdjSWhDdWU4RUJUOWh2TDRIbElWOXlRZmZTdmNNMXYtVzhVS1Vmc3ZtRjNFTTduY1lscFViU2RuSmNwZXN3MEM1ZUFHSEJqT3lBSjcyQ3g5MldESVBLbWdxYmIyVGZoVVV2dXc4VUduekx4TGdEVDFkcmdudXBTaml0bU9fOEhVdw?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Sweet Samurai：BGaming 本週抽獎老虎機遊戲 — 97.6% RTP、非對稱網格、最高 4,500 倍獎金 - Bettors Insider</span><span data-en="">Sweet Samurai: BGaming's Sweepstakes Slot Game of the Week — 97.6% RTP, Asymmetric Grid, 4,500x Max Win - Bettors Insider</span></a></div><div class="card-summary"><span data-zh="">Sweet Samurai：BGaming 本週抽獎老虎機遊戲 — 97.6% RTP、非對稱網格、最高 4,500 倍獎金 Bettors Insider</span><span data-en="">Sweet Samurai: BGaming's Sweepstakes Slot Game of the Week — 97.6% RTP, Asymmetric Grid, 4,500x Max Win Bettors Insider</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div></div>
 <div class="section-title" data-section="news">📰 <span data-zh="">一般新聞</span><span data-en="">News</span></div>
 <div class="news-grid" data-section="news" id="newsGrid"><p style="color:#64748b;font-size:12px;"><span data-zh="">今日無此類項目</span><span data-en="">No items in this section today</span></p></div>
-<div class="footer" id="footer"><span>🤖 Sweepstakes Casino 智能競品監控 | 2026-07-01 | 共 29 則 | 生成時間 2026-07-01 09:21 UTC</span></div>
+<div class="footer" id="footer"><span>🤖 Sweepstakes Casino 智能競品監控 | 2026-07-01 | 共 29 則 | 生成時間 2026-07-01 10:40 UTC</span></div>
 <script>
 var _sect='all', _threat='all';
 
@@ -214,6 +244,21 @@ function _applyFilters(){
       el.style.display='';
     }
   });
+}
+function compFilter(mode){
+  document.getElementById('compBtnAll').classList.toggle('active', mode==='all');
+  document.getElementById('compBtnActive').classList.toggle('active', mode==='active');
+  document.querySelectorAll('.comp-chip').forEach(chip=>{
+    chip.style.display = (mode==='active' && !chip.classList.contains('active')) ? 'none' : '';
+  });
+}
+function compTierToggle(btn){
+  const chips = btn.closest('.comp-tier-section').querySelector('.comp-chips');
+  const collapsed = chips.classList.toggle('collapsed');
+  const zh = btn.querySelector('[data-zh]');
+  const en = btn.querySelector('[data-en]');
+  if(zh) zh.textContent = collapsed ? '展開' : '收合';
+  if(en) en.textContent = collapsed ? 'Expand' : 'Collapse';
 }
 function copyCard(btn){
   const card = btn.closest('.news-card,.li-card');
