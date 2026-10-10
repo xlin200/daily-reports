@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sweepstakes Daily Report</title>
+<style>
+:root{--critical:#7f1d1d;--high:#dc2626;--med:#ea580c;--low:#16a34a;--bg:#f1f5f9;--surface:#ffffff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--accent:#2563eb;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:16px;font-size:14px;}
+a{color:var(--accent);text-decoration:none;}a:hover{text-decoration:underline;}
+/* header */
+.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px;}
+.header h1{font-size:17px;font-weight:700;color:var(--text);}
+.lang-toggle{display:flex;gap:6px;}
+.lang-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px;}
+.lang-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+/* stats bar */
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.stat-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;color:var(--muted);}
+.stat-item strong{font-size:16px;margin-right:4px;color:var(--text);}
+/* alert summary */
+.alert-box{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:16px 20px;margin-bottom:20px;}
+.alert-box h2{font-size:14px;font-weight:700;margin-bottom:14px;color:#92400e;}
+.alert-items{display:flex;flex-direction:column;}
+.alert-item-row{padding:12px 0;border-bottom:1px solid #fde68a;}
+.alert-item-row:last-child{border-bottom:none;padding-bottom:2px;}
+.alert-item-header{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;line-height:1.5;margin-bottom:5px;}
+.alert-item-header .a-source{font-size:13px;font-weight:700;color:#1a1a1a;}
+.alert-item-header a{font-size:13px;font-weight:500;color:#1d4ed8;text-decoration:none;}
+.alert-item-header a:hover{text-decoration:underline;}
+.alert-item-analysis{font-size:12px;color:#78350f;line-height:1.75;padding-left:22px;white-space:pre-line;}
+.alert-item[data-threat=low]{font-size:13px;color:#166534;}
+/* section */
+.section-title{font-size:15px;font-weight:700;margin:20px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border);color:var(--text);}
+/* card grid */
+.news-grid,.linkedin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:8px;}
+/* card */
+.news-card,.li-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.news-card:hover,.li-card:hover{border-color:#94a3b8;box-shadow:0 2px 8px rgba(0,0,0,.10);}
+/* threat badge */
+.threat-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;}
+.threat-critical{background:#fce7e7;color:#7f1d1d;font-weight:700;}
+.threat-high{background:#fee2e2;color:#b91c1c;}
+.threat-medium{background:#ffedd5;color:#c2410c;}
+.threat-low{background:#dcfce7;color:#15803d;}
+/* tags row */
+.tags-row{display:flex;flex-wrap:wrap;gap:4px;align-items:center;}
+.tag{padding:2px 7px;border-radius:4px;font-size:11px;border:1px solid var(--border);background:var(--bg);color:var(--muted);}
+.cat-regulation{border-color:#fca5a5;color:#dc2626;background:#fef2f2;}
+.cat-market{border-color:#a5b4fc;color:#4338ca;background:#eef2ff;}
+.cat-product{border-color:#6ee7b7;color:#059669;background:#ecfdf5;}
+.cat-strategy{border-color:#fcd34d;color:#b45309;background:#fffbeb;}
+.cat-self{background:#fee2e2;border-color:#fca5a5;color:#b91c1c;}
+.source-tag{color:var(--muted);}
+/* card title */
+.card-title{font-size:13px;font-weight:600;line-height:1.4;color:var(--text);}
+.card-summary{font-size:12px;color:var(--muted);line-height:1.6;}
+/* analysis */
+.analysis-block{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;margin-top:10px;}
+.analysis-title{font-size:11px;font-weight:700;color:#7c3aed;margin-bottom:4px;}
+.analysis-text{font-size:12px;color:#475569;line-height:1.6;} .analysis-line{margin-bottom:4px;}
+/* copy btn */
+.copy-btn{align-self:flex-end;padding:3px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;font-size:11px;}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+/* filter bar */
+.filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-items:center;}
+.filter-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;font-size:12px;}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.filter-btn[data-value=critical].active{background:#7f1d1d;border-color:#7f1d1d;}
+.filter-btn[data-value=high].active{background:#dc2626;border-color:#dc2626;}
+.filter-btn[data-value=medium].active{background:#ea580c;border-color:#ea580c;}
+.filter-btn[data-value=low].active{background:#16a34a;border-color:#16a34a;}
+.filter-sep{color:var(--border);padding:0 4px;font-size:16px;}
+/* impact box (per-card impact + action) */
+.impact-box{background:#fefce8;border:1px solid #fde047;border-radius:6px;padding:8px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:4px;}
+.impact-line{font-size:12px;color:#1e293b;line-height:1.6;}
+.impact-line.is-action{color:#166534;}
+/* dara state impact badge (regulation cards only) */
+.dara-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;border:1px solid;margin-top:4px;}
+.dara-badge.federal{background:#7f1d1d;color:#fff;border-color:#7f1d1d;}
+.dara-badge.active-big{background:#fce7e7;color:#7f1d1d;border-color:#fca5a5;}
+.dara-badge.active{background:#fff7ed;color:#9a3412;border-color:#fdba74;}
+.dara-badge.blocked{background:#f0fdf4;color:#166534;border-color:#86efac;}
+/* competitor watch panel */
+.comp-watch{background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:14px 18px;margin-bottom:16px;}
+.comp-watch-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.comp-watch-hdr-left{display:flex;flex-direction:column;gap:2px;}
+.comp-watch-title{font-size:15px;font-weight:700;color:var(--text);}
+.comp-watch-sub{font-size:12px;color:var(--muted);}
+.comp-filter-btns{display:flex;gap:4px;}
+.comp-filter-btn{padding:3px 10px;border-radius:5px;border:1px solid var(--border);font-size:11px;cursor:pointer;background:#f8fafc;color:var(--muted);}
+.comp-filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.comp-tier-section{margin-bottom:10px;}
+.comp-tier-section:last-of-type{margin-bottom:0;}
+.comp-tier-hdr{display:flex;align-items:center;gap:8px;border-left:3px solid #cbd5e1;padding-left:10px;margin-bottom:8px;}
+.comp-tier-hdr.has-active{border-color:var(--accent);}
+.comp-tier-name{font-size:13px;font-weight:600;color:var(--text);}
+.comp-active-badge{font-size:11px;padding:1px 8px;border-radius:10px;background:#e2e8f0;color:var(--muted);}
+.comp-active-badge.has-active{background:#dcfce7;color:#166534;}
+.comp-tier-toggle{margin-left:auto;font-size:11px;color:var(--muted);cursor:pointer;user-select:none;padding:2px 6px;border-radius:4px;border:1px solid var(--border);}
+.comp-tier-toggle:hover{background:var(--bg);}
+.comp-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.comp-chips.collapsed{display:none;}
+.comp-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:#f8fafc;color:var(--muted);}
+.comp-chip.active{background:#fff;color:var(--text);cursor:pointer;}
+.comp-chip.active.threat-critical{border-color:var(--critical);background:#fce7e7;color:#7f1d1d;}
+.comp-chip.active.threat-high{border-color:var(--high);background:#fef2f2;color:#991b1b;}
+.comp-chip.active.threat-medium{border-color:var(--med);background:#fff7ed;color:#9a3412;}
+.comp-chip.active.threat-low{border-color:var(--low);background:#f0fdf4;color:#166534;}
+.comp-chip-count{font-weight:700;font-size:11px;}
+.comp-legend{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-top:12px;border-top:1px solid var(--border);padding-top:8px;}
+/* advice box */
+.advice-box{background:#f0f4ff;border:1px solid #a5b4fc;border-radius:10px;padding:14px;margin-bottom:16px;}
+.advice-box h2{font-size:14px;font-weight:700;margin-bottom:8px;color:#3730a3;}
+.advice-text{font-size:13px;color:#1e293b;line-height:1.8;}
+.advice-section{font-size:13px;font-weight:700;margin:8px 0 4px;color:#3730a3;}
+.advice-section.signals{color:#6d28d9;}
+.advice-section.actions{color:#0f766e;}
+.advice-section.state-impact{color:#1d4ed8;}
+.advice-bullet{font-size:13px;color:#1e293b;line-height:1.7;padding-left:8px;margin-bottom:2px;}
+.advice-bullet.signal-bullet{color:#4c1d95;}
+.advice-bullet.action-bullet{color:#134e4a;}
+.advice-bullet.state-bullet{color:#1e3a8a;}
+/* section accent colors */
+.section-title[data-section=prediction_market]{border-color:#7c3aed;color:#5b21b6;}
+.section-title[data-section=market_opportunity]{border-color:#059669;color:#065f46;}
+.section-title[data-section=product]{border-color:#0284c7;color:#0c4a6e;}
+.section-title[data-section=news]{border-color:#94a3b8;}
+/* footer */
+.footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;}
+/* date nav */
+.date-nav{display:flex;gap:8px;align-items:center;font-size:12px;}
+.date-nav a{color:var(--accent);}
+/* language control */
+[data-en]{display:none;}
+body.lang-en [data-zh]{display:none;}
+body.lang-en [data-en]{display:inline;}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>📊 <span data-zh="">Sweepstakes Casino 競品日報</span><span data-en="">Sweepstakes Casino Daily Report</span><span class="report-date"> 2026-10-10</span></h1>
+<div class="date-nav" id="dateNav"><a href="archive/2026-10-10.html">📁 Archive</a></div>
+<div class="lang-toggle">
+<button class="lang-btn active" id="btnZh" onclick="setLang('zh')">中文</button>
+<button class="lang-btn" id="btnEn" onclick="setLang('en')">EN</button>
+</div>
+</div>
+<!-- stats bar -->
+<div class="stats" id="statsBar"><div class="stat-item"><strong>⚖️ 3</strong><span data-zh="">法規風險</span><span data-en="">Regulation</span></div><div class="stat-item"><strong>💼 6</strong><span data-zh="">競品動態</span><span data-en="">Competitor</span></div><div class="stat-item"><strong>🌐 0</strong><span data-zh="">市場機會</span><span data-en="">Market Opp</span></div><div class="stat-item"><strong>🎮 1</strong><span data-zh="">產品趨勢</span><span data-en="">Product</span></div><div class="stat-item"><strong>📰 11</strong><span data-zh="">一般新聞</span><span data-en="">News</span></div><div class="stat-item"><strong>🚨 0</strong><span data-zh="">緊急</span><span data-en="">Critical</span></div><div class="stat-item"><strong>🔴 1</strong><span data-zh="">高威脅</span><span data-en="">High Threat</span></div><div class="stat-item"><strong>🟠 0</strong><span data-zh="">中威脅</span><span data-en="">Medium</span></div><div class="stat-item"><strong>🟢 20</strong><span data-zh="">低威脅</span><span data-en="">Low Threat</span></div></div>
+<!-- alert summary -->
+<div class="alert-box" id="alertBox">
+<h2>🚨 <span data-zh="">警示摘要</span><span data-en="">Alert Summary</span></h2>
+<div class="alert-items" id="alertItems"><div class="alert-item-row" data-threat="high"><div class="alert-item-header">🔴 <span class="tag cat-regulation"><span data-zh="">法規</span><span data-en="">Regulation</span></span><span class="a-source">GNews:Sweepstakes：</span><a href="https://news.google.com/rss/articles/CBMimgFBVV95cUxPcmpuYlliUHhCcGtvYzVnTUVOZkZ2TThPYWlXdFJYRDl0a3ZMMWFrN1MxelBGbUJpdHBUU1FyMkY4b3RJZFZkRlRMOERyWmVmSkdDRTJEVERlM3h5a1hCSlY5UG9ZSEtyT1hrQXdpdmdLWGlxNW8wMnhOcS1Kb05vRzh5OXFQYzlEYWpGLTVVdmFnUlFvM3AwaW53?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">懷俄明州掃蕩式賭場法案：禁止還是規範社交賭場遊戲？- RG.org</span><span data-en="">Wyoming Sweepstakes Bills: Ban or Regulate Social Casino Play? - RG.org</span></a></div><div class="alert-item-analysis"><span data-zh="">⚡ 影響：懷俄明州若禁止或嚴格監管社交娛樂場遊戲，將直接影響AceWin所有在該州營運的合作客戶及其相關營收。
+✅ 建議行動：【評估風險】AceWin應立即評估懷俄明州法案的潛在全面影響，並與當地法律顧問協商，為若法案透過可能導致的營運調整預作準備。</span></div></div></div>
+</div>
+<!-- daily advice -->
+<div class="advice-box" id="adviceBox">
+<h2>📡 <span data-zh="">今日訊號</span><span data-en="">Today's Signals</span></h2>
+<div class="advice-text" id="adviceText"><p class="advice-bullet signal-bullet">• 掃蕩式賭場在美國面臨日益嚴格的法規審查，各州正積極探討禁止或規範此類遊戲的立法。</p><p class="advice-bullet signal-bullet">• 市場上掃蕩式賭場營運商正透過多元的免費獎勵、回饋金及促銷活動，積極吸引和留存玩家。</p><p class="advice-bullet signal-bullet">• 玩家對高RTP、高額獎金潛力以及經典遊戲的偏好，持續驅動著遊戲內容開發與推薦清單的重點。</p><p class="advice-bullet signal-bullet">• B2B遊戲供應商正積極尋求合作夥伴，並強化其掃蕩式遊戲軟體的合規性與市場適應能力。</p></div>
+</div>
+<!-- competitor watch -->
+<div class="comp-watch" id="compWatch">
+<div class="comp-watch-hdr">
+<div class="comp-watch-hdr-left">
+<span class="comp-watch-title">🏆 <span data-zh="">競品動態雷達</span><span data-en="">Competitor Watch</span></span>
+<span class="comp-watch-sub" id="compSubtitle">今日 3 家有新動態</span>
+</div>
+<div class="comp-filter-btns">
+<button class="comp-filter-btn active" id="compBtnAll" onclick="compFilter('all')"><span data-zh="">全部</span><span data-en="">All</span></button>
+<button class="comp-filter-btn" id="compBtnActive" onclick="compFilter('active')"><span data-zh="">僅有動態</span><span data-en="">Active only</span></button>
+</div>
+</div>
+<div id="compGrid"><div class="comp-tier-section" data-active="0" data-tier="operator"><div class="comp-tier-hdr"><span class="comp-tier-name" data-zh="">競品</span><span class="comp-tier-name" data-en="">Competitors</span><span class="comp-active-badge"><span data-zh="">0/9 活躍</span><span data-en="">0/9 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">展開</span><span data-en="">Expand</span></span></div><div class="comp-chips collapsed"><div class="comp-chip" data-comp="VGW"><span>VGW</span></div><div class="comp-chip" data-comp="Stake.us"><span>Stake.us</span></div><div class="comp-chip" data-comp="CrownCoins"><span>CrownCoins</span></div><div class="comp-chip" data-comp="Pulsz"><span>Pulsz</span></div><div class="comp-chip" data-comp="McLuck"><span>McLuck</span></div><div class="comp-chip" data-comp="WOW Vegas"><span>WOW Vegas</span></div><div class="comp-chip" data-comp="Sportzino"><span>Sportzino</span></div><div class="comp-chip" data-comp="Fortune Coins"><span>Fortune Coins</span></div><div class="comp-chip" data-comp="High5 Casino"><span>High5 Casino</span></div></div></div><div class="comp-tier-section" data-active="2" data-tier="hybrid"><div class="comp-tier-hdr has-active"><span class="comp-tier-name" data-zh="">混合模式</span><span class="comp-tier-name" data-en="">Hybrid Model</span><span class="comp-active-badge has-active"><span data-zh="">2/3 活躍</span><span data-en="">2/3 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">收合</span><span data-en="">Collapse</span></span></div><div class="comp-chips"><div class="comp-chip active threat-low" data-comp="CardCrush"><span>CardCrush</span><span>🟢</span><span class="comp-chip-count">1</span></div><div class="comp-chip" data-comp="Albumza"><span>Albumza</span></div><div class="comp-chip active threat-low" data-comp="Zumbacards"><span>Zumbacards</span><span>🟢</span><span class="comp-chip-count">1</span></div></div></div><div class="comp-tier-section" data-active="1" data-tier="client"><div class="comp-tier-hdr has-active"><span class="comp-tier-name" data-zh="">客戶</span><span class="comp-tier-name" data-en="">Clients</span><span class="comp-active-badge has-active"><span data-zh="">1/3 活躍</span><span data-en="">1/3 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">收合</span><span data-en="">Collapse</span></span></div><div class="comp-chips"><div class="comp-chip active threat-low" data-comp="RealPlay"><span>RealPlay</span><span>🟢</span><span class="comp-chip-count">2</span></div><div class="comp-chip" data-comp="LavishLuck"><span>LavishLuck</span></div><div class="comp-chip" data-comp="Funrize"><span>Funrize</span></div></div></div><div class="comp-tier-section" data-active="0" data-tier="supplier"><div class="comp-tier-hdr"><span class="comp-tier-name" data-zh="">供應商</span><span class="comp-tier-name" data-en="">Suppliers</span><span class="comp-active-badge"><span data-zh="">0/2 活躍</span><span data-en="">0/2 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">展開</span><span data-en="">Expand</span></span></div><div class="comp-chips collapsed"><div class="comp-chip" data-comp="Pragmatic Play"><span>Pragmatic Play</span></div><div class="comp-chip" data-comp="AGS"><span>AGS</span></div></div></div></div>
+<div class="comp-legend">
+<span>🔴 <span data-zh="">高威脅</span><span data-en="">High</span>  🟠 <span data-zh="">中威脅</span><span data-en="">Medium</span>  🟢 <span data-zh="">低威脅</span><span data-en="">Low</span></span>
+<span data-zh="">數字 = 今日動態則數</span><span data-en="">Number = today's mentions</span>
+</div>
+</div>
+<!-- filter bar -->
+<div class="filter-bar" id="filterBar">
+<button class="filter-btn active" data-filter-type="section" data-value="all" onclick="filterSection('all')"><span data-zh="">全部</span><span data-en="">All</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="regulation" onclick="filterSection('regulation')"><span data-zh="">⚖️ 法規</span><span data-en="">⚖️ Regulation</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="competitor" onclick="filterSection('competitor')"><span data-zh="">💼 競品</span><span data-en="">💼 Competitor</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="market_opportunity" onclick="filterSection('market_opportunity')"><span data-zh="">🌐 市場機會</span><span data-en="">🌐 Market</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="product" onclick="filterSection('product')"><span data-zh="">🎮 產品</span><span data-en="">🎮 Product</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="news" onclick="filterSection('news')"><span data-zh="">📰 新聞</span><span data-en="">📰 News</span></button>
+<span class="filter-sep">│</span>
+<button class="filter-btn active" data-filter-type="threat" data-value="all" onclick="filterThreat('all')"><span data-zh="">全部威脅</span><span data-en="">All</span></button>
+<button class="filter-btn" data-filter-type="threat" data-value="critical" onclick="filterThreat('critical')">🚨 <span data-zh="">緊急</span><span data-en="">Critical</span></button>
+<button class="filter-btn" data-filter-type="threat" data-value="high" onclick="filterThreat('high')">🔴 <span data-zh="">高</span><span data-en="">High</span></button>
+<button class="filter-btn" data-filter-type="threat" data-value="medium" onclick="filterThreat('medium')">🟠 <span data-zh="">中</span><span data-en="">Med</span></button>
+<button class="filter-btn" data-filter-type="threat" data-value="low" onclick="filterThreat('low')">🟢 <span data-zh="">低</span><span data-en="">Low</span></button>
+</div>
+<!-- sections — priority order matches gen_cards routing -->
+<div class="section-title" data-section="regulation">⚖️ <span data-zh="">法規風險</span><span data-en="">Regulatory Risk</span></div>
+<div class="news-grid" data-section="regulation" id="regulationGrid"><div class="news-card" data-category="regulation" data-threat="high"><div class="tags-row"><span class="threat-badge threat-high"><span data-zh="">🔴 高威脅</span><span data-en="">🔴 High</span></span><span class="tag cat-regulation"><span data-zh="">法規</span><span data-en="">Regulation</span></span><span class="tag source-tag">GNews:Sweepstakes</span><span class="dara-badge active"><span data-zh="">🟠 Dara 在此州營運</span><span data-en="">🟠 Dara active in this state</span></span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMimgFBVV95cUxPcmpuYlliUHhCcGtvYzVnTUVOZkZ2TThPYWlXdFJYRDl0a3ZMMWFrN1MxelBGbUJpdHBUU1FyMkY4b3RJZFZkRlRMOERyWmVmSkdDRTJEVERlM3h5a1hCSlY5UG9ZSEtyT1hrQXdpdmdLWGlxNW8wMnhOcS1Kb05vRzh5OXFQYzlEYWpGLTVVdmFnUlFvM3AwaW53?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">懷俄明州掃蕩式賭場法案：禁止還是規範社交賭場遊戲？- RG.org</span><span data-en="">Wyoming Sweepstakes Bills: Ban or Regulate Social Casino Play? - RG.org</span></a></div><div class="card-summary"><span data-zh="">懷俄明州掃蕩式賭場法案：禁止還是規範社交賭場遊戲？RG.org</span><span data-en="">Wyoming Sweepstakes Bills: Ban or Regulate Social Casino Play? RG.org</span></div><div class="analysis-block"><div class="analysis-title"><span data-zh="">📊 評估分析</span><span data-en="">📊 Impact Assessment</span></div><div class="analysis-text"><div data-zh=""><div class="analysis-line">💡 市場影響</div><div class="analysis-line">此法案無論是禁止或嚴格監管，都將為美國各州的社交娛樂場市場帶來高度不確定性，可能引發其他州效仿，進而收緊對此類遊戲的態度。這將迫使整個產業加速適應更嚴格的合規要求或尋求新的市場成長點。</div><div class="analysis-line">🎮 AceWin 角度（遊戲供應商）</div><div class="analysis-line">懷俄明州若透過禁令，將影響AceWin在該州所有營運商客戶（包括Dara及其競爭對手）的遊戲流量與收入，進而衝擊AceWin作為供應商在該州的整體遊戲授權費收入。AceWin的影響層面取決於其遊戲在該州所有整合平臺的總曝險，而非僅限於Dara的市佔率。</div><div class="analysis-line">🏢 Dara 角度（平臺 / Operator）</div><div class="analysis-line">若懷俄明州禁止社交娛樂場遊戲，Dara Casino將直接失去該州現有的活躍使用者群與營收來源，必須即刻停止在該州的推廣及營運活動。若採行嚴格監管，Dara則需投入更多資源來符合新的法規要求，增加合規成本並可能限制其市場擴張。</div></div></div></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="regulation" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-regulation"><span data-zh="">法規</span><span data-en="">Regulation</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiywFBVV95cUxPUVlfQzZpUGpsUUpHQmctb1kzeXVvcGxDNTE1U0N6YWFQQ3lyQkVRWl83MTBuSmlyQXB4MVFSNm1FMHJ5azdpdWtVeHFkdXVtNlNPWnRsUll3TWR3Ui0tQUg0YzdYSUhmQlZHV3ZXRnFfcXh6QWd3Q1R0b29VeEJvR2Rmdld4SGYxZ3FWeXozSHYycEZVazJ5dk9fX044eWpCenBzMERNVi1tTXV1YlJXVllrOGg1U3ZpalFVN2h4ZUZNZWRGSl9QT0txcw?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">NuxGame 如何開發掃蕩式賭場軟體以符合特定市場規範 - thecitizen.co.tz</span><span data-en="">How NuxGame develops sweepstakes casino software to meet market-specific rules - thecitizen.co.tz</span></a></div><div class="card-summary"><span data-zh="">NuxGame 如何開發掃蕩式賭場軟體以符合特定市場規範 thecitizen.co.tz</span><span data-en="">How NuxGame develops sweepstakes casino software to meet market-specific rules thecitizen.co.tz</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="regulation" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-regulation"><span data-zh="">法規</span><span data-en="">Regulation</span></span><span class="tag source-tag">Yogonet</span><span class="dara-badge blocked"><span data-zh="">✅ Dara 已封鎖此州</span><span data-en="">✅ Dara already blocked here</span></span></div><div class="card-title"><a href="https://www.yogonet.com/international/news/2026/10/09/126775-michigan-orders-33-unlicensed-offshore-operators-to-stop-serving-residents-and-flags-selfexclusion-gap" rel="noopener noreferrer" target="_blank"><span data-zh="">密西根州下令33家未獲授權的離岸營運商停止服務當地居民，並指出自我排除機制漏洞</span><span data-en="">Michigan orders 33 unlicensed offshore operators to stop serving residents and flags self-exclusion gap</span></a></div><div class="card-summary"><span data-zh="">密西根州博弈管制委員會 (MGCB) 已向33家離岸博弈營運商發出勒令停止函，這些營運商在未獲州許可證的情況下，向密西根州居民提供線上娛樂場遊戲、抽獎式遊戲及運動博弈。該機構同時指出，密西根州的自我排除機制存在漏洞。</span><span data-en="">The Michigan Gaming Control Board (MGCB) has sent cease-and-desist letters to 33 offshore gambling operators offering online casino games, sweepstakes-style games, and sports betting to Michigan residents without a state license. The agency also warned that residents enrolled in Michigan’s self-excl</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div></div>
+<div class="section-title" data-section="competitor">💼 <span data-zh="">競品動態</span><span data-en="">Competitor Activity</span></div>
+<div class="news-grid" data-section="competitor" id="competitorGrid"><div class="news-card" data-category="strategy" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-strategy"><span data-zh="">策略</span><span data-en="">Strategy</span></span><span class="tag source-tag">GNews:Hacksaw</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxPa0NuRWc1N3pxNVlxUHJNSkVMN3I3RnRHeGcyV0F0MThHNElNZGpuT2l4eEhVU0VqZklWUS1kX05CRmEtUXFUTmx5RjY2eUVJNEtGMHdpOGI5WVdmd3UwZGNZeTJXUTdmUGlZSEIyM1dEdmh4eXBZMW55a0RObzFTejVoS082R1Nfb19HdXhVWDJ2WjFfQXF4c3lZSmVVRjAycHd1QTZGOE10d3pJamVJVFFaTU95QVFtQUpPdEx1Y3BDdldPcmdVdUtoNmdjdE44T1E?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Hacksaw Gaming 與 Sazka Hry 在捷克共和國建立合作關係 - TradingView</span><span data-en="">Hacksaw Gaming Enters Partnership With Sazka Hry In Czech Republic - TradingView</span></a></div><div class="card-summary"><span data-zh="">Hacksaw Gaming 與 Sazka Hry 在捷克共和國建立合作關係 TradingView</span><span data-en="">Hacksaw Gaming Enters Partnership With Sazka Hry In Czech Republic TradingView</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="product" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-product"><span data-zh="">產品</span><span data-en="">Product</span></span><span class="tag source-tag">GNews:IGT</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMirgFBVV95cUxNU2Z3TGljTXdjUHBrdVpFb3UzMXgyNzlJV253YUlCU2phbEtSTzFEM1NQTDlHcVpzLUNyT21IQWlPQ04yeW1aWGdLd193cFZCSTVxRjVWODdlQ3QwNTQtaEd4c3JjUHk0UzVKTUsyc3FhVGtQeS1WUDRGTjIxczVCTlJhWVIwN3gybF9lUGJJa2ZxenZXUXBsU3dtQUtnOWVuYkR3c0t0R0NVZFBQRGc?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Holland Casino 慶祝50週年，推出訂製版 IGT 老虎機 - InterGame Online</span><span data-en="">Holland Casino marks 50 years with custom IGT slot - InterGame Online</span></a></div><div class="card-summary"><span data-zh="">Holland Casino 慶祝50週年，推出訂製版 IGT 老虎機</span><span data-en="">Holland Casino marks 50 years with custom IGT slot InterGame Online</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:CardCrush</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTFA3dnpfeWlwLXQwajNBLThxUkY4X0RVUEhaYkVuTkZmRmtnYlhBeGVHU20yN2Z4bHM5LTNDREItMjdiQ0xJR2RRemdNeU8zeXVXMy1QWXZZUE1WeWU2TmowXzdGQnlQamxf?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Card Crush 促銷程式碼 2026 | 5 張卡片、30 免費 SC 及免費旋轉 - Deadspin | Sports</span><span data-en="">Card Crush Promo Code 2026 | 5 Cards, 30 Free SC &amp; Free Spins - Deadspin | Sports</span></a></div><div class="card-summary"><span data-zh="">Card Crush 促銷程式碼 2026 | 5 張卡片、30 免費 SC 及免費旋轉 Deadspin | Sports</span><span data-en="">Card Crush Promo Code 2026 | 5 Cards, 30 Free SC &amp; Free Spins Deadspin | Sports</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Zumbacards</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE1LYXFOaHhHZzRoNmc4aS1CM09ZVGMzMWdiOF9qb1pzcmpOaWo3UVdDRjVFRXhSdmtCMU1FTWNlanpyRG0yX2NFdVdfaktFZXlNdXp5UTRhdDNGRF93cVRaTg?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">ZumbaCards 評論 2026：Zumba Cards 合法嗎？ - Deadspin | Sports</span><span data-en="">ZumbaCards Review 2026: Is Zumba Cards Legit? - Deadspin | Sports</span></a></div><div class="card-summary"><span data-zh="">ZumbaCards 評論 2026：Zumba Cards 合法嗎？ Deadspin | Sports</span><span data-en="">ZumbaCards Review 2026: Is Zumba Cards Legit? Deadspin | Sports</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">Yogonet</span></div><div class="card-title"><a href="https://www.yogonet.com/international/news/2026/10/09/126782-lonestar-casino-runs-austin-popup-and-pedicab-relay-during-both-austin-city-limits-weekends" rel="noopener noreferrer" target="_blank"><span data-zh="">LoneStar Casino 在兩場 Austin City Limits 週末期間舉辦奧斯汀快閃活動並提供三輪車接駁</span><span data-en="">LoneStar Casino runs Austin pop-up and pedicab relay during both Austin City Limits weekends</span></a></div><div class="card-summary"><span data-zh="">社交賭場品牌 LoneStar Casino 將於今年十月，在 Austin City Limits 藝術節的兩個週末期間，於德州奧斯汀 Barton Springs Road 上的 Oria’s 舉辦快閃活動。該公司也在市區街頭放置品牌三輪車，並將在藝術節期間營運至午夜。</span><span data-en="">Social casino brand LoneStar Casino is operating a pop-up activation at Oria’s on Barton Springs Road in Austin, Texas, across both weekends of the Austin City Limits festival this October. The company has also put branded pedicabs on the city’s streets, and these will run until midnight on festival</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxOMEt0YW94Mzl4TkxIZncxY2JYd2gwaHhLay15WFJIX01ZMG9JcDZIM2NOVHM4cmc3ZEhtRDZWZ21wZG94bFJJVzY2N3BYM3k5ak9RNlhfWmxKTnZrZTBPRm9VVG1xRGRnWExTZ3YwYkZPQ1NRQWlnSV9sUkN3UjZfUWMwRXlRcnlBMmdYY2QwSi0xZ0ZvdXVWdEsxSzZUeUg3NEhKNlNyNWp0eTBLcVJwT1FzS00zNC04MjZUVXNZYzF2SC1FRVpz?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">我們團隊十月推薦的真實獎品兌換社交娛樂場遊戲 - MassLive.com</span><span data-en="">Social casino games with real prize redemptions our team is backing in October - MassLive.com</span></a></div><div class="card-summary"><span data-zh="">MassLive.com：我們團隊十月推薦的真實獎品兌換社交娛樂場遊戲</span><span data-en="">Social casino games with real prize redemptions our team is backing in October MassLive.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div></div>
+<div class="section-title" data-section="market_opportunity">🌐 <span data-zh="">市場機會</span><span data-en="">Market Opportunity</span></div>
+<div class="news-grid" data-section="market_opportunity" id="marketGrid"><p style="color:#64748b;font-size:12px;"><span data-zh="">今日無此類項目</span><span data-en="">No items in this section today</span></p></div>
+<div class="section-title" data-section="product">🎮 <span data-zh="">產品趨勢</span><span data-en="">Product Trends</span></div>
+<div class="news-grid" data-section="product" id="productGrid"><div class="news-card" data-category="product" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-product"><span data-zh="">產品</span><span data-en="">Product</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMi5AFBVV95cUxPb1RJSDBxYnBDSzBIQW03OEJwZXl6b01mZ3hCR3FBcmFnQ2JFWjMwdWVxazdIbnNXUVUwREZQN01BOHl5MXhkSkRQeWdKZnBEcjZFdnpRNkxrTENYTWYwNGhkMGE3Z0xjT0hhVG5hX05XZWg0Z05Ib2NGSmgxdVdhamFyNnZBYThNM2NpTUQ3aHgwdHdhaHpnYlNxY0R3Umc4WVU5X3pid2dDckZaODJyaWxDdWdnenlZU2ZjQzNrTWMyOXFaeXdHT2FLWGVaRnAwb01uR2dtMVVzT25qc2dhYXNTSGg?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Chanced Sweepstakes Casino 推出重大組合保險：損失可獲10%回饋 - TheLines.com</span><span data-en="">Chanced Sweepstakes Casino Launches Major Bundle Insurance: Get 10% of Losses Back - TheLines.com</span></a></div><div class="card-summary"><span data-zh="">Chanced Sweepstakes Casino 推出重大組合保險：損失可獲10%回饋</span><span data-en="">Chanced Sweepstakes Casino Launches Major Bundle Insurance: Get 10% of Losses Back TheLines.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div></div>
+<div class="section-title" data-section="news">📰 <span data-zh="">一般新聞</span><span data-en="">News</span></div>
+<div class="news-grid" data-section="news" id="newsGrid"><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTFBVS0tPVGpWUTJmQkNjaEtSOUd3ZHE0eVgyTDNKS1E5cmdwYVIxVkxZM3NOeVpPQ0hVUXFPTHlrUnk5ejBHSkx5WExKMmFERFhtaDlYMmZqdld3dkhkdUxWMg?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">掃蕩式賭場：美國最佳掃蕩式賭場網站列表 - PennLive.com</span><span data-en="">Sweepstakes casinos: List of best US sweeps casino sites - PennLive.com</span></a></div><div class="card-summary"><span data-zh="">掃蕩式賭場：美國最佳掃蕩式賭場網站列表 PennLive.com</span><span data-en="">Sweepstakes casinos: List of best US sweeps casino sites PennLive.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiywFBVV95cUxQYUxwVUg0Z3Y3cVEwVUxKMWdZUndaSTBtd3gtSmNhQXFSYUtKOHNYQ2ZnNmdLTEd4ZEdwODRwM2NjcUdZMzZvRndPZDFuTUlVWVNveW5vOUY0T3VlRU5RdE5pMTI2aGpVUXAxemZFMVBfZXU4d0M4OUVzRDlvemttcnJzM1JWN1IzX3o4Y25RVThmQ05IVE1zZ3V2XzRQc1RjaVo0d0RRQTBsam5LSllycUkwRzN6cUxHQW4tZngzY1BPUDJROGdIckJORQ?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">我們團隊本週末力薦的 5 款每日免費金幣社交賭場遊戲 - MLive.com</span><span data-en="">5 social casino games with daily free coins our team is backing this weekend - MLive.com</span></a></div><div class="card-summary"><span data-zh="">我們團隊本週末力薦的 5 款每日免費金幣社交賭場遊戲 MLive.com</span><span data-en="">5 social casino games with daily free coins our team is backing this weekend MLive.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxOZXYyY3Q3VjBWaXAyZDlKMmhLcUhrSWsteXNRSWVVWDM4ZHhNeGhaUnpnMTMwVU5NemFWSE04blE0TE54aVZLNFFtVEViU0VXZUlzUkM1ZjRvQ3EwVklQbDVoUlNRYkxFZHVSUGtWNUxsQkhzcm9tYm9fU1ItM3pRNkxpQkoxOXQtbk1hX2JNdkloYzhXN192R3hpUndEbGt3MlU0?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">本週最新社交娛樂場遊戲：根據RTP和最高獎金精選15款 - RG.org</span><span data-en="">New Social Casino Games This Week: 15 Picks By RTP And Top Prize - RG.org</span></a></div><div class="card-summary"><span data-zh="">本週最新社交娛樂場遊戲：根據RTP和最高獎金精選15款</span><span data-en="">New Social Casino Games This Week: 15 Picks By RTP And Top Prize RG.org</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMi1wFBVV95cUxNWlZtbWo4V1pjRXMwdU1Id2ZxTkJITDJnX1I1TWZ6TE5rTVFMZS1xS3d1bjM5cE91M2ZxOUxIZGp6NnVVeFVVRlZMeXZXVUxzRkRPazFaQjYweEQ2OTdvbEx3NDAwZFZXMXY3c3ZFNC1hUUxON0FUdi12QW5VN2pVZnVJWU5mYTBXOV9MWlFjbDNVVlU3NUxYYlZhRTRIRTI1c05pdmVXT3FGRXZhU3EyWVl1b3pXT2p4Xy1CZ0RRMlNLV0xVaUR1UUd5aG1sdjJmRUluekc3Yw?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Blood Suckers、Mega Joker 還有3款隱藏寶藏抽獎娛樂場遊戲，仍能贏大獎 - Bettors Insider</span><span data-en="">Blood Suckers, Mega Joker and 3 More Hidden Gem Sweepstakes Casino Games That Still Pay Out Big - Bettors Insider</span></a></div><div class="card-summary"><span data-zh="">Blood Suckers、Mega Joker 還有3款隱藏寶藏抽獎娛樂場遊戲，仍能贏大獎</span><span data-en="">Blood Suckers, Mega Joker and 3 More Hidden Gem Sweepstakes Casino Games That Still Pay Out Big Bettors Insider</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxPdTg2alhqRkJ1YU1OekszX3RDUXRDSzBVYmVDdnhsM1RfaFNsN096cm5qbHNaVi1VaXRqZDZrdlAydElvODVNRmY3cXFkenlmcEJMakNwMS1CUDhvcHFRbTBWcmVXc0pIT3BIWFhNclo5TUlvOTBuUDZhRU1kaFFGV3lFcVZpaXJLTXZtSlo3WnE0YXZDM01WV3FlTEhyTGUtTWtNMktScmlydnFFdWVkS1Y3RG5NRDhmUEE?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">社交賭場遊戲：5 款附贈免費 Sweeps Coins，今年秋天值得一試 - AL.com</span><span data-en="">Social casino games: 5 titles with free Sweeps Coins worth a spin this fall - AL.com</span></a></div><div class="card-summary"><span data-zh="">社交賭場遊戲：5 款附贈免費 Sweeps Coins，今年秋天值得一試 AL.com</span><span data-en="">Social casino games: 5 titles with free Sweeps Coins worth a spin this fall AL.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiwwFBVV95cUxQY0ZUTXB6UWxPc3NQVjNBRGpNdHppTEtGTGtLWTBGbklPYklBSkRxSC00WGtLR3VyMlhiUmdEWDJ2VjlyNlMtalBzNXdDUkc2NWtUQXpkSjRmLW1GTGNaVU03bktPLWFlSm5UMHN2Mkp5QXJpMmZ5X0tOSGt0c0w5NEJHdkNHUkVtcHdoemgxcm1LZ0ozMHM5Wnhkdm5TSUVhRklhU1Joa21YdnF4Q0dGX0FpM3VQZUdBdTBXNDhvekZ1SU0?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">社交賭場遊戲：我們團隊迎接週末力挺的 5 款遊戲 - OregonLive.com</span><span data-en="">Social casino games: 5 titles our team is backing heading into the weekend - OregonLive.com</span></a></div><div class="card-summary"><span data-zh="">社交賭場遊戲：我們團隊迎接週末力挺的 5 款遊戲 OregonLive.com</span><span data-en="">Social casino games: 5 titles our team is backing heading into the weekend OregonLive.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiyAFBVV95cUxQTkNZV0pkUTVMaVZfUlFkWXVET1pNZWlaeXcyNzEzM3c1MC0xRkhGZC12LXBVZU1IQXpuVkRQcjdma3hwY3dEbW5hV1otNWota1JtZC1rZzRmRHhhOTh1REgwNF80ZHNJZ2V6UzZNeUs1UGZ0czVtSV9Ldm90cW14MmRqNmx1ZE80d3pEaXFtM3pOdUdSNndsZVVXTHNsWFJjTTdHbHVlMVNNMWZ0VFJjVjF4Q0pOV0NrSWQtcFNGdEhPMzVqOEpVcw?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">社交賭場列表：8 個附贈免費 Sweeps Coins，本週五值得一試的網站 - MLive.com</span><span data-en="">Social casino list: 8 sites with free Sweeps Coins worth a spin this Friday - MLive.com</span></a></div><div class="card-summary"><span data-zh="">社交賭場列表：8 個附贈免費 Sweeps Coins，本週五值得一試的網站 MLive.com</span><span data-en="">Social casino list: 8 sites with free Sweeps Coins worth a spin this Friday MLive.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMingFBVV95cUxNMmh6RzhWWFVYaFVkdXZCSDFaM3pzaW9oMmQ2ZExXMDgtS29VUk9OUkxhN1gtUlRHN0JNX1JFTnFNcXBtM19hVUE1b3hwdmIwTXN0UlBYRkI1WThtblVwOVJReEh3R2w2THozYmtIMld2RVJlXzBWSWVHeWFseE5BSmJkYko2Ykw1YUUzNVpmYS1Sd3FKbnlpcDNnOTBhQQ?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">紐約線上賭場 (2026)：紐約合法社交賭場選項 - RotoWire</span><span data-en="">New York Online Casinos (2026): Legal Social Casino Options in NY - RotoWire</span></a></div><div class="card-summary"><span data-zh="">紐約線上賭場 (2026)：紐約合法社交賭場選項 RotoWire</span><span data-en="">New York Online Casinos (2026): Legal Social Casino Options in NY RotoWire</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMixAFBVV95cUxQRk8tM0Jxc1o0ZjZnR2JRazg3TTlrbVJJSk9hVGJPcW9RU3JqVUZTOUduN0YzYzlzTEtxUkRVQlJ0bUwxYk01aGp4aGpPZno5Z2JnYjNrcFZURzNVYzRGdHdTMWJGX1Z2UTEtNjlCNkxqV2t5VUpsdkNPa203V1p6WkJKV2dnVkM2eXVIalJmUGhsRzN6bzd5cTl6d051VkRsd1Vib1ROdS1FU0ExaG05YkFIcTA0TVBEcVJMcDY5YTcxdFpa?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">無需消費的社交賭場列表，本團隊本週五力薦 - OregonLive.com</span><span data-en="">Social casino list with no purchase needed our team is backing this Friday - OregonLive.com</span></a></div><div class="card-summary"><span data-zh="">無需消費的社交賭場列表，本團隊本週五力薦 OregonLive.com</span><span data-en="">Social casino list with no purchase needed our team is backing this Friday OregonLive.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMirgFBVV95cUxOZ0pKcDBWOWFCQ0gtSGxpM2VER1dKeldfVFRGMTY3bXdyQ3lTQ0FMRW5STXRMZGFhODNCQmxFX2dBZEVxS2Y3VGk4XzBoLXdaeXQ4RjBmSFZsN1hDWmtoUVAyc1hUajRhdndKUTNfb2lndS01MHAtWFcyM3dQd1FOaHhrWWxMb3VEZ0hPUzdPT3FsMDBJTTNIODl3eHBJbXhWU2xoZFQtTEp3V2FsN0E?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">頂級社交賭場註冊獎金 (十月)：新玩家最佳優惠 - RotoWire</span><span data-en="">Top Social Casino Sign Up Bonuses (October): Best Offers for New Players - RotoWire</span></a></div><div class="card-summary"><span data-zh="">頂級社交賭場註冊獎金 (十月)：新玩家最佳優惠 RotoWire</span><span data-en="">Top Social Casino Sign Up Bonuses (October): Best Offers for New Players RotoWire</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMinwFBVV95cUxPdmRtVFJFRHNhWXlMSnozck9LSFBfM21rUVpZLTRCcEtlNXlwX3JfRG9TclRfTHhuNThWcWppQzlIRmtEYjVqQ3duYTV1UW16dVd6Y1VheU1JQ2pPZXNMSEFqM001cHdyNXo0VDN4SzZxOFRnWXF1eHczOEpSeTdvNkdWU1JkZ09BV1FfMUlEUlFnblZQYml0ZjBUVWxhTGs?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">2026 年社交賭場應用程式：最佳手機應用、功能與精選 - RotoWire</span><span data-en="">Social Casino Apps 2026: Best Mobile Apps, Features &amp; Top Picks - RotoWire</span></a></div><div class="card-summary"><span data-zh="">2026 年社交賭場應用程式：最佳手機應用、功能與精選 RotoWire</span><span data-en="">Social Casino Apps 2026: Best Mobile Apps, Features &amp; Top Picks RotoWire</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div></div>
+<div class="footer" id="footer"><span>🤖 Sweepstakes Casino 智能競品監控 | 2026-10-10 | 共 21 則 | 生成時間 2026-10-10 05:32 UTC</span><span style="color:#ef4444;">⚠️ 抓取失敗 RSS：Casino.org, SCCG Management</span></div>
+<script>
+var _sect='all', _threat='all';
+
+function setLang(l){
+  document.body.className = l==='en' ? 'lang-en' : '';
+  document.getElementById('btnZh').className = 'lang-btn'+(l==='zh'?' active':'');
+  document.getElementById('btnEn').className = 'lang-btn'+(l==='en'?' active':'');
+}
+function filterSection(s){
+  _sect=s;
+  document.querySelectorAll('[data-filter-type="section"]').forEach(b=>b.classList.toggle('active',b.dataset.value===s));
+  _applyFilters();
+}
+function filterThreat(t){
+  _threat=t;
+  document.querySelectorAll('[data-filter-type="threat"]').forEach(b=>b.classList.toggle('active',b.dataset.value===t));
+  _applyFilters();
+}
+function _applyFilters(){
+  // Filter only news/linkedin cards — never touch alert summary rows
+  document.querySelectorAll('.news-card[data-threat],.li-card[data-threat]').forEach(card=>{
+    card.style.display=(_threat==='all'||card.dataset.threat===_threat)?'':'none';
+  });
+  // Show/hide sections (title + grid) by section filter; hide empty grids
+  document.querySelectorAll('[data-section]').forEach(el=>{
+    var sectMatch=_sect==='all'||el.dataset.section===_sect;
+    if(!sectMatch){el.style.display='none';return;}
+    // If it's a grid, hide if all its cards are hidden
+    var cards=el.querySelectorAll('[data-threat]');
+    if(cards.length>0){
+      var anyVisible=[].some.call(cards,c=>c.style.display!=='none');
+      el.style.display=anyVisible?'':'none';
+    } else {
+      el.style.display='';
+    }
+  });
+}
+function compFilter(mode){
+  document.getElementById('compBtnAll').classList.toggle('active', mode==='all');
+  document.getElementById('compBtnActive').classList.toggle('active', mode==='active');
+  document.querySelectorAll('.comp-chip').forEach(chip=>{
+    chip.style.display = (mode==='active' && !chip.classList.contains('active')) ? 'none' : '';
+  });
+}
+function compTierToggle(btn){
+  const chips = btn.closest('.comp-tier-section').querySelector('.comp-chips');
+  const collapsed = chips.classList.toggle('collapsed');
+  const zh = btn.querySelector('[data-zh]');
+  const en = btn.querySelector('[data-en]');
+  if(zh) zh.textContent = collapsed ? '展開' : '收合';
+  if(en) en.textContent = collapsed ? 'Expand' : 'Collapse';
+}
+function copyCard(btn){
+  const card = btn.closest('.news-card,.li-card');
+  const title = card.querySelector('.card-title')?.innerText||'';
+  const url   = card.querySelector('a')?.href||'';
+  navigator.clipboard.writeText(title+'\n'+url);
+  btn.textContent='✓';setTimeout(()=>btn.textContent='⎘',1200);
+}
+</script>
+</body>
+</html>
