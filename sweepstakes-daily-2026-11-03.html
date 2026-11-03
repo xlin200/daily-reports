@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sweepstakes Daily Report</title>
+<style>
+:root{--critical:#7f1d1d;--high:#dc2626;--med:#ea580c;--low:#16a34a;--bg:#f1f5f9;--surface:#ffffff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--accent:#2563eb;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:16px;font-size:14px;}
+a{color:var(--accent);text-decoration:none;}a:hover{text-decoration:underline;}
+/* header */
+.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px;}
+.header h1{font-size:17px;font-weight:700;color:var(--text);}
+.lang-toggle{display:flex;gap:6px;}
+.lang-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px;}
+.lang-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+/* stats bar */
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.stat-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;color:var(--muted);}
+.stat-item strong{font-size:16px;margin-right:4px;color:var(--text);}
+/* alert summary */
+.alert-box{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:16px 20px;margin-bottom:20px;}
+.alert-box h2{font-size:14px;font-weight:700;margin-bottom:14px;color:#92400e;}
+.alert-items{display:flex;flex-direction:column;}
+.alert-item-row{padding:12px 0;border-bottom:1px solid #fde68a;}
+.alert-item-row:last-child{border-bottom:none;padding-bottom:2px;}
+.alert-item-header{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;line-height:1.5;margin-bottom:5px;}
+.alert-item-header .a-source{font-size:13px;font-weight:700;color:#1a1a1a;}
+.alert-item-header a{font-size:13px;font-weight:500;color:#1d4ed8;text-decoration:none;}
+.alert-item-header a:hover{text-decoration:underline;}
+.alert-item-analysis{font-size:12px;color:#78350f;line-height:1.75;padding-left:22px;white-space:pre-line;}
+.alert-item[data-threat=low]{font-size:13px;color:#166534;}
+/* section */
+.section-title{font-size:15px;font-weight:700;margin:20px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border);color:var(--text);}
+/* card grid */
+.news-grid,.linkedin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:8px;}
+/* card */
+.news-card,.li-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.news-card:hover,.li-card:hover{border-color:#94a3b8;box-shadow:0 2px 8px rgba(0,0,0,.10);}
+/* threat badge */
+.threat-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;}
+.threat-critical{background:#fce7e7;color:#7f1d1d;font-weight:700;}
+.threat-high{background:#fee2e2;color:#b91c1c;}
+.threat-medium{background:#ffedd5;color:#c2410c;}
+.threat-low{background:#dcfce7;color:#15803d;}
+/* tags row */
+.tags-row{display:flex;flex-wrap:wrap;gap:4px;align-items:center;}
+.tag{padding:2px 7px;border-radius:4px;font-size:11px;border:1px solid var(--border);background:var(--bg);color:var(--muted);}
+.cat-regulation{border-color:#fca5a5;color:#dc2626;background:#fef2f2;}
+.cat-market{border-color:#a5b4fc;color:#4338ca;background:#eef2ff;}
+.cat-product{border-color:#6ee7b7;color:#059669;background:#ecfdf5;}
+.cat-strategy{border-color:#fcd34d;color:#b45309;background:#fffbeb;}
+.cat-self{background:#fee2e2;border-color:#fca5a5;color:#b91c1c;}
+.source-tag{color:var(--muted);}
+/* card title */
+.card-title{font-size:13px;font-weight:600;line-height:1.4;color:var(--text);}
+.card-summary{font-size:12px;color:var(--muted);line-height:1.6;}
+/* analysis */
+.analysis-block{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;margin-top:10px;}
+.analysis-title{font-size:11px;font-weight:700;color:#7c3aed;margin-bottom:4px;}
+.analysis-text{font-size:12px;color:#475569;line-height:1.6;} .analysis-line{margin-bottom:4px;}
+/* copy btn */
+.copy-btn{align-self:flex-end;padding:3px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;font-size:11px;}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+/* filter bar */
+.filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-items:center;}
+.filter-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;font-size:12px;}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.filter-btn[data-value=critical].active{background:#7f1d1d;border-color:#7f1d1d;}
+.filter-btn[data-value=high].active{background:#dc2626;border-color:#dc2626;}
+.filter-btn[data-value=medium].active{background:#ea580c;border-color:#ea580c;}
+.filter-btn[data-value=low].active{background:#16a34a;border-color:#16a34a;}
+.filter-sep{color:var(--border);padding:0 4px;font-size:16px;}
+/* impact box (per-card impact + action) */
+.impact-box{background:#fefce8;border:1px solid #fde047;border-radius:6px;padding:8px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:4px;}
+.impact-line{font-size:12px;color:#1e293b;line-height:1.6;}
+.impact-line.is-action{color:#166534;}
+/* dara state impact badge (regulation cards only) */
+.dara-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;border:1px solid;margin-top:4px;}
+.dara-badge.federal{background:#7f1d1d;color:#fff;border-color:#7f1d1d;}
+.dara-badge.active-big{background:#fce7e7;color:#7f1d1d;border-color:#fca5a5;}
+.dara-badge.active{background:#fff7ed;color:#9a3412;border-color:#fdba74;}
+.dara-badge.blocked{background:#f0fdf4;color:#166534;border-color:#86efac;}
+/* competitor watch panel */
+.comp-watch{background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:14px 18px;margin-bottom:16px;}
+.comp-watch-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.comp-watch-hdr-left{display:flex;flex-direction:column;gap:2px;}
+.comp-watch-title{font-size:15px;font-weight:700;color:var(--text);}
+.comp-watch-sub{font-size:12px;color:var(--muted);}
+.comp-filter-btns{display:flex;gap:4px;}
+.comp-filter-btn{padding:3px 10px;border-radius:5px;border:1px solid var(--border);font-size:11px;cursor:pointer;background:#f8fafc;color:var(--muted);}
+.comp-filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.comp-tier-section{margin-bottom:10px;}
+.comp-tier-section:last-of-type{margin-bottom:0;}
+.comp-tier-hdr{display:flex;align-items:center;gap:8px;border-left:3px solid #cbd5e1;padding-left:10px;margin-bottom:8px;}
+.comp-tier-hdr.has-active{border-color:var(--accent);}
+.comp-tier-name{font-size:13px;font-weight:600;color:var(--text);}
+.comp-active-badge{font-size:11px;padding:1px 8px;border-radius:10px;background:#e2e8f0;color:var(--muted);}
+.comp-active-badge.has-active{background:#dcfce7;color:#166534;}
+.comp-tier-toggle{margin-left:auto;font-size:11px;color:var(--muted);cursor:pointer;user-select:none;padding:2px 6px;border-radius:4px;border:1px solid var(--border);}
+.comp-tier-toggle:hover{background:var(--bg);}
+.comp-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.comp-chips.collapsed{display:none;}
+.comp-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:#f8fafc;color:var(--muted);}
+.comp-chip.active{background:#fff;color:var(--text);cursor:pointer;}
+.comp-chip.active.threat-critical{border-color:var(--critical);background:#fce7e7;color:#7f1d1d;}
+.comp-chip.active.threat-high{border-color:var(--high);background:#fef2f2;color:#991b1b;}
+.comp-chip.active.threat-medium{border-color:var(--med);background:#fff7ed;color:#9a3412;}
+.comp-chip.active.threat-low{border-color:var(--low);background:#f0fdf4;color:#166534;}
+.comp-chip-count{font-weight:700;font-size:11px;}
+.comp-legend{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-top:12px;border-top:1px solid var(--border);padding-top:8px;}
+/* advice box */
+.advice-box{background:#f0f4ff;border:1px solid #a5b4fc;border-radius:10px;padding:14px;margin-bottom:16px;}
+.advice-box h2{font-size:14px;font-weight:700;margin-bottom:8px;color:#3730a3;}
+.advice-text{font-size:13px;color:#1e293b;line-height:1.8;}
+.advice-section{font-size:13px;font-weight:700;margin:8px 0 4px;color:#3730a3;}
+.advice-section.signals{color:#6d28d9;}
+.advice-section.actions{color:#0f766e;}
+.advice-section.state-impact{color:#1d4ed8;}
+.advice-bullet{font-size:13px;color:#1e293b;line-height:1.7;padding-left:8px;margin-bottom:2px;}
+.advice-bullet.signal-bullet{color:#4c1d95;}
+.advice-bullet.action-bullet{color:#134e4a;}
+.advice-bullet.state-bullet{color:#1e3a8a;}
+/* section accent colors */
+.section-title[data-section=prediction_market]{border-color:#7c3aed;color:#5b21b6;}
+.section-title[data-section=market_opportunity]{border-color:#059669;color:#065f46;}
+.section-title[data-section=product]{border-color:#0284c7;color:#0c4a6e;}
+.section-title[data-section=news]{border-color:#94a3b8;}
+/* footer */
+.footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;}
+/* date nav */
+.date-nav{display:flex;gap:8px;align-items:center;font-size:12px;}
+.date-nav a{color:var(--accent);}
+/* language control */
+[data-en]{display:none;}
+body.lang-en [data-zh]{display:none;}
+body.lang-en [data-en]{display:inline;}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>📊 <span data-zh="">Sweepstakes Casino 競品日報</span><span data-en="">Sweepstakes Casino Daily Report</span><span class="report-date"> 2026-11-03</span></h1>
+<div class="date-nav" id="dateNav"><a href="archive/2026-11-03.html">📁 Archive</a></div>
+<div class="lang-toggle">
+<button class="lang-btn active" id="btnZh" onclick="setLang('zh')">中文</button>
+<button class="lang-btn" id="btnEn" onclick="setLang('en')">EN</button>
+</div>
+</div>
+<!-- stats bar -->
+<div class="stats" id="statsBar"><div class="stat-item"><strong>⚖️ 2</strong><span data-zh="">法規風險</span><span data-en="">Regulation</span></div><div class="stat-item"><strong>💼 6</strong><span data-zh="">競品動態</span><span data-en="">Competitor</span></div><div class="stat-item"><strong>🌐 0</strong><span data-zh="">市場機會</span><span data-en="">Market Opp</span></div><div class="stat-item"><strong>🎮 0</strong><span data-zh="">產品趨勢</span><span data-en="">Product</span></div><div class="stat-item"><strong>📰 3</strong><span data-zh="">一般新聞</span><span data-en="">News</span></div><div class="stat-item"><strong>🚨 0</strong><span data-zh="">緊急</span><span data-en="">Critical</span></div><div class="stat-item"><strong>🔴 1</strong><span data-zh="">高威脅</span><span data-en="">High Threat</span></div><div class="stat-item"><strong>🟠 1</strong><span data-zh="">中威脅</span><span data-en="">Medium</span></div><div class="stat-item"><strong>🟢 9</strong><span data-zh="">低威脅</span><span data-en="">Low Threat</span></div></div>
+<!-- alert summary -->
+<div class="alert-box" id="alertBox">
+<h2>🚨 <span data-zh="">警示摘要</span><span data-en="">Alert Summary</span></h2>
+<div class="alert-items" id="alertItems"><div class="alert-item-row" data-threat="high"><div class="alert-item-header">🔴 <span class="tag cat-regulation"><span data-zh="">法規</span><span data-en="">Regulation</span></span><span class="a-source">GNews:Sweepstakes：</span><a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxOSmpzZWR3Z0tKd3RzZjNxT21aWjc1R1g4ZUVwaHRFWk1pRWtvd243UWlpTWJyWHFjMGJwQ0RwbVNJTHNzQUczZHUzV0FIbXdxN2h3VEJROF9tV0RRUUgxN1g0N3Nxb0hRcGpYemFDOUd0Wk90VVJPSjUyOElQMlkydg?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">奧克拉荷馬州 SB 1589 掃獎式賭場禁令於 11 月 1 日生效 - gHacks</span><span data-en="">Oklahoma SB 1589 sweepstakes casino ban takes effect November 1 - gHacks</span></a></div><div class="alert-item-analysis"><span data-zh="">⚡ 影響：此禁令生效導致AceWin在奧克拉荷馬州透過所有營運商客戶的潛在遊戲總營收減少，而Dara在此州的營運影響則已完結。
+✅ 建議行動：【營運管理】營運團隊應確保自11月1日起，徹底停止針對奧克拉荷馬州的所有市場推廣及使用者獲取活動，以符合當地法規。禁止將此事件作為未來其他州可能頒布禁令的推論依據，避免不必要的假設性風險評估。</span></div></div></div>
+</div>
+<!-- daily advice -->
+<div class="advice-box" id="adviceBox">
+<h2>📡 <span data-zh="">今日訊號</span><span data-en="">Today's Signals</span></h2>
+<div class="advice-text" id="adviceText"><p class="advice-bullet signal-bullet">• 市場競爭與信任建立：掃獎式娛樂場市場正走向成熟，玩家和內容創作者越來越關注品牌的可信賴性與安全性，並積極尋找知名品牌的替代方案。</p><p class="advice-bullet signal-bullet">• 內容行銷與使用者發現：透過「最佳社交娛樂場」榜單和評論內容，成為玩家發現新遊戲和平臺的重要途徑，凸顯內容行銷與社群曝光的重要性。</p><p class="advice-bullet signal-bullet">• 季節性與主題內容驅動參與：將季節性事件、節慶或體育賽事元素融入遊戲挑戰和內容更新，是提升玩家參與度和創造話題的有效策略。</p><p class="advice-bullet signal-bullet">• B2B供應商的合作擴張：內容供應商透過與大型營運商建立策略夥伴關係，加速遊戲內容進入新市場，顯示B2B合作模式的效率。</p></div>
+</div>
+<!-- competitor watch -->
+<div class="comp-watch" id="compWatch">
+<div class="comp-watch-hdr">
+<div class="comp-watch-hdr-left">
+<span class="comp-watch-title">🏆 <span data-zh="">競品動態雷達</span><span data-en="">Competitor Watch</span></span>
+<span class="comp-watch-sub" id="compSubtitle">今日 3 家有新動態</span>
+</div>
+<div class="comp-filter-btns">
+<button class="comp-filter-btn active" id="compBtnAll" onclick="compFilter('all')"><span data-zh="">全部</span><span data-en="">All</span></button>
+<button class="comp-filter-btn" id="compBtnActive" onclick="compFilter('active')"><span data-zh="">僅有動態</span><span data-en="">Active only</span></button>
+</div>
+</div>
+<div id="compGrid"><div class="comp-tier-section" data-active="2" data-tier="operator"><div class="comp-tier-hdr has-active"><span class="comp-tier-name" data-zh="">競品</span><span class="comp-tier-name" data-en="">Competitors</span><span class="comp-active-badge has-active"><span data-zh="">2/9 活躍</span><span data-en="">2/9 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">收合</span><span data-en="">Collapse</span></span></div><div class="comp-chips"><div class="comp-chip active threat-low" data-comp="VGW"><span>VGW</span><span>🟢</span><span class="comp-chip-count">1</span></div><div class="comp-chip active threat-low" data-comp="Stake.us"><span>Stake.us</span><span>🟢</span><span class="comp-chip-count">1</span></div><div class="comp-chip" data-comp="CrownCoins"><span>CrownCoins</span></div><div class="comp-chip" data-comp="Pulsz"><span>Pulsz</span></div><div class="comp-chip" data-comp="McLuck"><span>McLuck</span></div><div class="comp-chip" data-comp="WOW Vegas"><span>WOW Vegas</span></div><div class="comp-chip" data-comp="Sportzino"><span>Sportzino</span></div><div class="comp-chip" data-comp="Fortune Coins"><span>Fortune Coins</span></div><div class="comp-chip" data-comp="High5 Casino"><span>High5 Casino</span></div></div></div><div class="comp-tier-section" data-active="1" data-tier="hybrid"><div class="comp-tier-hdr has-active"><span class="comp-tier-name" data-zh="">混合模式</span><span class="comp-tier-name" data-en="">Hybrid Model</span><span class="comp-active-badge has-active"><span data-zh="">1/3 活躍</span><span data-en="">1/3 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">收合</span><span data-en="">Collapse</span></span></div><div class="comp-chips"><div class="comp-chip" data-comp="CardCrush"><span>CardCrush</span></div><div class="comp-chip active threat-low" data-comp="Albumza"><span>Albumza</span><span>🟢</span><span class="comp-chip-count">1</span></div><div class="comp-chip" data-comp="Zumbacards"><span>Zumbacards</span></div></div></div><div class="comp-tier-section" data-active="0" data-tier="client"><div class="comp-tier-hdr"><span class="comp-tier-name" data-zh="">客戶</span><span class="comp-tier-name" data-en="">Clients</span><span class="comp-active-badge"><span data-zh="">0/3 活躍</span><span data-en="">0/3 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">展開</span><span data-en="">Expand</span></span></div><div class="comp-chips collapsed"><div class="comp-chip" data-comp="RealPlay"><span>RealPlay</span></div><div class="comp-chip" data-comp="LavishLuck"><span>LavishLuck</span></div><div class="comp-chip" data-comp="Funrize"><span>Funrize</span></div></div></div><div class="comp-tier-section" data-active="0" data-tier="supplier"><div class="comp-tier-hdr"><span class="comp-tier-name" data-zh="">供應商</span><span class="comp-tier-name" data-en="">Suppliers</span><span class="comp-active-badge"><span data-zh="">0/2 活躍</span><span data-en="">0/2 active</span></span><span class="comp-tier-toggle" onclick="compTierToggle(this)"><span data-zh="">展開</span><span data-en="">Expand</span></span></div><div class="comp-chips collapsed"><div class="comp-chip" data-comp="Pragmatic Play"><span>Pragmatic Play</span></div><div class="comp-chip" data-comp="AGS"><span>AGS</span></div></div></div></div>
+<div class="comp-legend">
+<span>🔴 <span data-zh="">高威脅</span><span data-en="">High</span>  🟠 <span data-zh="">中威脅</span><span data-en="">Medium</span>  🟢 <span data-zh="">低威脅</span><span data-en="">Low</span></span>
+<span data-zh="">數字 = 今日動態則數</span><span data-en="">Number = today's mentions</span>
+</div>
+</div>
+<!-- filter bar -->
+<div class="filter-bar" id="filterBar">
+<button class="filter-btn active" data-filter-type="section" data-value="all" onclick="filterSection('all')"><span data-zh="">全部</span><span data-en="">All</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="regulation" onclick="filterSection('regulation')"><span data-zh="">⚖️ 法規</span><span data-en="">⚖️ Regulation</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="competitor" onclick="filterSection('competitor')"><span data-zh="">💼 競品</span><span data-en="">💼 Competitor</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="market_opportunity" onclick="filterSection('market_opportunity')"><span data-zh="">🌐 市場機會</span><span data-en="">🌐 Market</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="product" onclick="filterSection('product')"><span data-zh="">🎮 產品</span><span data-en="">🎮 Product</span></button>
+<button class="filter-btn" data-filter-type="section" data-value="news" onclick="filterSection('news')"><span data-zh="">📰 新聞</span><span data-en="">📰 News</span></button>
+<span class="filter-sep">│</span>
+<button class="filter-btn active" data-filter-type="threat" data-value="all" onclick="filterThreat('all')"><span data-zh="">全部威脅</span><span data-en="">All</span></button>
+<button class="filter-btn" data-filter-type="threat" data-value="critical" onclick="filterThreat('critical')">🚨 <span data-zh="">緊急</span><span data-en="">Critical</span></button>
+<button class="filter-btn" data-filter-type="threat" data-value="high" onclick="filterThreat('high')">🔴 <span data-zh="">高</span><span data-en="">High</span></button>
+<button class="filter-btn" data-filter-type="threat" data-value="medium" onclick="filterThreat('medium')">🟠 <span data-zh="">中</span><span data-en="">Med</span></button>
+<button class="filter-btn" data-filter-type="threat" data-value="low" onclick="filterThreat('low')">🟢 <span data-zh="">低</span><span data-en="">Low</span></button>
+</div>
+<!-- sections — priority order matches gen_cards routing -->
+<div class="section-title" data-section="regulation">⚖️ <span data-zh="">法規風險</span><span data-en="">Regulatory Risk</span></div>
+<div class="news-grid" data-section="regulation" id="regulationGrid"><div class="news-card" data-category="regulation" data-threat="high"><div class="tags-row"><span class="threat-badge threat-high"><span data-zh="">🔴 高威脅</span><span data-en="">🔴 High</span></span><span class="tag cat-regulation"><span data-zh="">法規</span><span data-en="">Regulation</span></span><span class="tag source-tag">GNews:Sweepstakes</span><span class="dara-badge blocked"><span data-zh="">✅ Dara 已封鎖此州</span><span data-en="">✅ Dara already blocked here</span></span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxOSmpzZWR3Z0tKd3RzZjNxT21aWjc1R1g4ZUVwaHRFWk1pRWtvd243UWlpTWJyWHFjMGJwQ0RwbVNJTHNzQUczZHUzV0FIbXdxN2h3VEJROF9tV0RRUUgxN1g0N3Nxb0hRcGpYemFDOUd0Wk90VVJPSjUyOElQMlkydg?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">奧克拉荷馬州 SB 1589 掃獎式賭場禁令於 11 月 1 日生效 - gHacks</span><span data-en="">Oklahoma SB 1589 sweepstakes casino ban takes effect November 1 - gHacks</span></a></div><div class="card-summary"><span data-zh="">奧克拉荷馬州 SB 1589 掃獎式賭場禁令將於 11 月 1 日生效。</span><span data-en="">Oklahoma SB 1589 sweepstakes casino ban takes effect November 1 gHacks</span></div><div class="analysis-block"><div class="analysis-title"><span data-zh="">📊 評估分析</span><span data-en="">📊 Impact Assessment</span></div><div class="analysis-text"><div data-zh=""><div class="analysis-line">💡 市場影響 奧克拉荷馬州對掃蕩式賭場的禁令，代表美國市場對此類遊戲的監管環境正趨於嚴格，可能促使其他州考慮類似立法。此類地區性禁令將逐步壓縮掃蕩式賭場行業的總體可用市場規模。</div><div class="analysis-line">🎮 AceWin 角度（遊戲供應商） 作為B2B遊戲供應商，AceWin的遊戲內容在Dara及其競爭對手等多個平臺營運，此禁令生效後，奧克拉荷馬州內所有整合AceWin遊戲的營運平臺都會受影響。AceWin在此州的總體營收影響，是基於所有合作平臺的總曝光度，而非僅限於Dara的市場份額。</div><div class="analysis-line">🏢 Dara 角度（平臺 / Operator） Dara Casino作為掃蕩式賭場營運商，已提前退出奧克拉荷馬州市場並完成封鎖，因此此禁令對其未來營運不再構成直接風險。這是一項已處理完畢的歷史事件，其影響已充分反映在公司現行策略中。</div></div></div></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="regulation" data-threat="medium"><div class="tags-row"><span class="threat-badge threat-medium"><span data-zh="">🟠 中威脅</span><span data-en="">🟠 Medium</span></span><span class="tag cat-regulation"><span data-zh="">法規</span><span data-en="">Regulation</span></span><span class="tag source-tag">Casino.org</span><span class="dara-badge federal"><span data-zh="">🌐 聯邦層級 → Dara 全州受影響</span><span data-en="">🌐 Federal — affects all Dara states</span></span></div><div class="card-title"><a href="https://www.casino.org/news/north-carolina-house-candidate-sues-pac-illegal-gambling-claim/" rel="noopener noreferrer" target="_blank"><span data-zh="">北卡羅來納州眾議院候選人 Charles Taylor 因非法賭博指控起訴 PAC</span><span data-en="">NC House Candidate Charles Taylor Sues PAC Over Illegal Gambling Claims</span></a></div><div class="card-summary"><span data-zh="">桑福德市議員 Charles Taylor（共和黨籍）在地方政府服務近二十年。然而，正當他週二尋求競選北卡羅來納州眾議院議員之際，Taylor 對一個政治行動委員會提起誹謗訴訟，該委員會透過郵件指控他經營非法賭博。</span><span data-en="">Sanford City Councilor Charles Taylor (R) has served in local government for nearly two decades. But as he seeks election to the North Carolina House of Representatives on Tuesday, Taylor has filed a defamation lawsuit against a political action committee over mailers alleging he runs an illegal gam</span></div><div class="analysis-block"><div class="analysis-title"><span data-zh="">📊 評估分析</span><span data-en="">📊 Impact Assessment</span></div><div class="analysis-text"><div data-zh=""><div class="analysis-line">💡 市場影響</div><div class="analysis-line">此次訴訟恐加劇美國監管機構對掃蕩賭場模式合法性的審查，尤其可能促使更多州或聯邦層面考慮實施更嚴格的法規或禁令。市場參與者將面臨更高的法律合規成本及營運不確定性，整體產業的擴張速度亦可能因此放緩。</div><div class="analysis-line">🎮 AceWin 角度（遊戲供應商）</div><div class="analysis-line">若因「非法賭博」指控導致任何一州全面禁止掃蕩賭場營運，AceWin 在該州與所有合作平臺（包括 Dara 及其他競爭者）的遊戲收入將受到直接且全面的影響。此類事件將削弱 AceWin 在美國市場的整體市場機會與遊戲授權收入，而非僅限於單一客戶的貢獻。</div><div class="analysis-line">🏢 Dara 角度（平臺 / Operator）</div><div class="analysis-line">身為掃蕩賭場營運商，Dara Casino 的營運合法性將面臨直接挑戰，其在已營運的 34 州可能會遭遇來自監管機關更嚴格的</div></div></div></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div></div>
+<div class="section-title" data-section="competitor">💼 <span data-zh="">競品動態</span><span data-en="">Competitor Activity</span></div>
+<div class="news-grid" data-section="competitor" id="competitorGrid"><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Regulation</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMieEFVX3lxTFBKdUFuUWpwV1pGLTJsMGRKNmRybTdkTDVHVk5mLU4tSkptTXQ1bmJQMDQwbVJrQVhPZmw0S2tGR3g1T2Fucl9NQ3d6Vl83TzFFd3RXOGNIeDY0Uy1YRFdqZll3YXFBbDNWWU9SSUE0X2NJWURKTmVEeQ?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Stake.us 合法營運州份 - 2026 年完整更新列表 - iGamingFuture</span><span data-en="">Stake.us Legal States - 2026 Full Updated List - iGamingFuture</span></a></div><div class="card-summary"><span data-zh="">Stake.us 合法營運州份 - 2026 年完整更新列表。</span><span data-en="">Stake.us Legal States - 2026 Full Updated List iGamingFuture</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:VGW</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMic0FVX3lxTE54ckdqSW1oeUtKVjFJc0NzQ2t6eHNLdWtmS2hSU25hTlBpaWI1YU5iUGtya3BGWTloQ3d3blMzNERwb2xFQUk2dENLemYzT2J3SXV4dDFkNk1zaUJDUHlCN3RJTkQwSDg2enEyc1RROGp6VEk?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">類似 Chumba 的賭場：2026 年最安全與最值得信賴的替代方案 - PennLive.com</span><span data-en="">Casinos like Chumba: Safest &amp; most trusted alternatives 2026 - PennLive.com</span></a></div><div class="card-summary"><span data-zh="">類似 Chumba 的賭場：2026 年最安全與最值得信賴的替代方案。</span><span data-en="">Casinos like Chumba: Safest &amp; most trusted alternatives 2026 PennLive.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Hacksaw</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiuAFBVV95cUxQWXE0U3NKdjliRlR1OXZxaUdZV2hJNUtJeUFWZEF4bDNacjBfVTlPSHFqZXlNWXRWSm44THAtbEtyaTg0UTV1cFo2YmFnMTRia3VwNng2WDJHWllBMjZDWEJjUkdLZHJpUlBJOEJoMm9rc1lBZ0VoVlpCSkkxci1jNkFmanV0V05jTjM5U2tuQU53VnNub0p3YWMwUlJSdUZ5VEpqLWh0WVJGS0ZoTEhvRzJQU1pIM3BT?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Hacksaw Gaming 與 FanDuel 合作，在康涅狄格州首次亮相 - TradingView</span><span data-en="">Hacksaw Gaming Makes Connecticut Debut With FanDuel - TradingView</span></a></div><div class="card-summary"><span data-zh="">Hacksaw Gaming 與 FanDuel 合作，在康涅狄格州首次亮相。</span><span data-en="">Hacksaw Gaming Makes Connecticut Debut With FanDuel TradingView</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="strategy" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-strategy"><span data-zh="">策略</span><span data-en="">Strategy</span></span><span class="tag source-tag">GNews:Hacksaw</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiwwFBVV95cUxOd1d4UVZreDNEbHNQa3Q1RzV4YnphZWVTN0R4N3c5cTlQWncxX3c3czZtX3lqbzdDX29EWnpKZ2NvVVl0SG5pcmljd2dDMDY4cVlUajVOQTFER3htS1k2YUlQbHMyMlpBMFI2eXJKaHZGaFRNRms2d21WN2NvUE5kUUhPaG9fVWtBMlF4amtVR0NKNU1IbTZ0SDJBNjhPSklKbW9HU1dTRkZKTDdlVWRGblBtRjMyZmpZNllLTUZkSWlRUW8?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Hacksaw AB (publ) (HACK) 將與 FanDuel 的合作夥伴關係擴充套件至康乃狄克州 – TradingView</span><span data-en="">Hacksaw AB (publ) (HACK) Extends FanDuel Partnership to Connecticut - TradingView</span></a></div><div class="card-summary"><span data-zh="">Hacksaw AB (publ) (HACK) 將與 FanDuel 的合作夥伴關係擴充套件至康乃狄克州 TradingView</span><span data-en="">Hacksaw AB (publ) (HACK) Extends FanDuel Partnership to Connecticut TradingView</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Albumza</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTFBzblgwa2FVUF9VemFKc1FrWENOd0NtaWlLSDRwNXd2UDJUeXJrVjBmc3JWdXVkV28tQkFPZ0NqMEotYmQ3eVVlOG5GWkIwUDdwYVdrUGtjRFJzb2x1bkR4Y25hVzcxM0da?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">Albumza 評論 2026 | Albumza 是值得信賴的品牌嗎？– Deadspin</span><span data-en="">Albumza Review 2026 | Is Albumza a Trusted Brand? - Deadspin</span></a></div><div class="card-summary"><span data-zh="">Albumza 評論 2026 | Albumza 是值得信賴的品牌嗎？Deadspin</span><span data-en="">Albumza Review 2026 | Is Albumza a Trusted Brand? Deadspin</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="strategy" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-strategy"><span data-zh="">策略</span><span data-en="">Strategy</span></span><span class="tag source-tag">CDC Gaming</span></div><div class="card-title"><a href="https://cdcgaming.com/aristocrat-to-continue-support-of-national-native-american-hall-of-fame/" rel="noopener noreferrer" target="_blank"><span data-zh="">Aristocrat 將繼續支援全美原住民名人堂</span><span data-en="">Aristocrat to continue support of National Native American Hall of Fame</span></a></div><div class="card-summary"><span data-zh="">Aristocrat 週一宣佈，將繼續支援全美原住民名人堂，以及該組織為表彰和支援美國原住民在當代歷史上所取得成就所做的努力。作為 2026 年全美原住民名人堂入選儀式 (Induction Ce...) 的傳統贊助商。</span><span data-en="">Aristocrat announced on Monday that it will continue to support the National Native American Hall of Fame and the organization’s efforts to recognize and support achievements of Native Americans in contemporary history. As legacy sponsor of the 2026 National Native American Hall of Fame Induction Ce</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div></div>
+<div class="section-title" data-section="market_opportunity">🌐 <span data-zh="">市場機會</span><span data-en="">Market Opportunity</span></div>
+<div class="news-grid" data-section="market_opportunity" id="marketGrid"><p style="color:#64748b;font-size:12px;"><span data-zh="">今日無此類項目</span><span data-en="">No items in this section today</span></p></div>
+<div class="section-title" data-section="product">🎮 <span data-zh="">產品趨勢</span><span data-en="">Product Trends</span></div>
+<div class="news-grid" data-section="product" id="productGrid"><p style="color:#64748b;font-size:12px;"><span data-zh="">今日無此類項目</span><span data-en="">No items in this section today</span></p></div>
+<div class="section-title" data-section="news">📰 <span data-zh="">一般新聞</span><span data-en="">News</span></div>
+<div class="news-grid" data-section="news" id="newsGrid"><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxNdHNwWUsxb2VNYk1pTUZYYmlaZHB5LUpOaVl5VlYzOERwQTFaNHlGYk8ySnVNQkdjUkhIX2JzNnlIYlF5N1RfUzRnRXRiRG9XcUlwdmtIc1JJcDNfRFdwLVV2ZVA5TnBXYzNCdXdzYjBFeFphRnhZcDV5TXpJN19ISkdyVFZId29aLVkwVFBMVXZnT19tWmUxeFpVM2l5UUwzaGtzdHVnSzhlVTVQRWEtay1xNjlYZGM?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">社交娛樂場列表：本週末我們團隊支援的全部 10 個網站 – OregonLive.com</span><span data-en="">Social casino list: All 10 sites our team is backing this weekend - OregonLive.com</span></a></div><div class="card-summary"><span data-zh="">社交娛樂場列表：本週末我們團隊支援的全部 10 個網站 OregonLive.com</span><span data-en="">Social casino list: All 10 sites our team is backing this weekend OregonLive.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMiswFBVV95cUxQazZnWjZjVUtfUkMzOUsyTnhwVzBzbTRWRTdsNnUxY2lMU01EM0JkVjd3MnhnS1lEbnNtMVVhRHRBY0h2MlNCSlBha0Jmdm0zTHo3TWczVVNITmlmbVg2SWtrR05aQ1pLRDdGSWhRTDU1TWNLV3U4ZHhmbDNZMnpob0lHRVJxeEZCWFZiR2syRzdVZDNmMXBKWm5UOV9qZ2JrWFh5RHZ5c1ViTlVXZUU2VmREVQ?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">社交娛樂場列表：2026 年 11 月值得加入的 12 個網站 – MLive.com</span><span data-en="">Social casino list: 12 sites worth joining in November 2026 - MLive.com</span></a></div><div class="card-summary"><span data-zh="">社交娛樂場列表：2026 年 11 月值得加入的 12 個網站 MLive.com</span><span data-en="">Social casino list: 12 sites worth joining in November 2026 MLive.com</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div><div class="news-card" data-category="market" data-threat="low"><div class="tags-row"><span class="threat-badge threat-low"><span data-zh="">🟢 低威脅</span><span data-en="">🟢 Low</span></span><span class="tag cat-market"><span data-zh="">市場</span><span data-en="">Market</span></span><span class="tag source-tag">GNews:Sweepstakes</span></div><div class="card-title"><a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxNb2FQRGZLbHFaR0VvVVVPQVNxSzFZNEJVcVM5SS1yWDYybGl5cU5mWi1nSmx1d2lIY1BTX2NnZ0Nac1FqdXhpVFBrXzZHeHpwQjlsTjVyV3BiOTl0ajdBR3AycWd1TjZuQWxlNTNiV0NwYmdnVlBEQkVmUlJpUmhnUWJ3MU9DZmVUeHJ2b2pQb0R4ZTY2dzY5SWtuN0dsZDkyaUYyQTlNNnRpa0FBa0JaQm1zVUpOZw?oc=5" rel="noopener noreferrer" target="_blank"><span data-zh="">板球錦標賽如何啟發社交娛樂場遊戲的季節性挑戰 - Cricket World</span><span data-en="">How cricket tournaments inspire seasonal challenges in social casino gaming - Cricket World</span></a></div><div class="card-summary"><span data-zh="">Cricket World 報導，本文探討板球錦標賽如何激發社交娛樂場遊戲中的季節性挑戰。</span><span data-en="">How cricket tournaments inspire seasonal challenges in social casino gaming Cricket World</span></div><button class="copy-btn" onclick="copyCard(this)">⎘</button></div></div>
+<div class="footer" id="footer"><span>🤖 Sweepstakes Casino 智能競品監控 | 2026-11-03 | 共 11 則 | 生成時間 2026-11-03 05:33 UTC</span><span style="color:#ef4444;">⚠️ 抓取失敗 RSS：WaPo, Casino.org, SCCG Management</span></div>
+<script>
+var _sect='all', _threat='all';
+
+function setLang(l){
+  document.body.className = l==='en' ? 'lang-en' : '';
+  document.getElementById('btnZh').className = 'lang-btn'+(l==='zh'?' active':'');
+  document.getElementById('btnEn').className = 'lang-btn'+(l==='en'?' active':'');
+}
+function filterSection(s){
+  _sect=s;
+  document.querySelectorAll('[data-filter-type="section"]').forEach(b=>b.classList.toggle('active',b.dataset.value===s));
+  _applyFilters();
+}
+function filterThreat(t){
+  _threat=t;
+  document.querySelectorAll('[data-filter-type="threat"]').forEach(b=>b.classList.toggle('active',b.dataset.value===t));
+  _applyFilters();
+}
+function _applyFilters(){
+  // Filter only news/linkedin cards — never touch alert summary rows
+  document.querySelectorAll('.news-card[data-threat],.li-card[data-threat]').forEach(card=>{
+    card.style.display=(_threat==='all'||card.dataset.threat===_threat)?'':'none';
+  });
+  // Show/hide sections (title + grid) by section filter; hide empty grids
+  document.querySelectorAll('[data-section]').forEach(el=>{
+    var sectMatch=_sect==='all'||el.dataset.section===_sect;
+    if(!sectMatch){el.style.display='none';return;}
+    // If it's a grid, hide if all its cards are hidden
+    var cards=el.querySelectorAll('[data-threat]');
+    if(cards.length>0){
+      var anyVisible=[].some.call(cards,c=>c.style.display!=='none');
+      el.style.display=anyVisible?'':'none';
+    } else {
+      el.style.display='';
+    }
+  });
+}
+function compFilter(mode){
+  document.getElementById('compBtnAll').classList.toggle('active', mode==='all');
+  document.getElementById('compBtnActive').classList.toggle('active', mode==='active');
+  document.querySelectorAll('.comp-chip').forEach(chip=>{
+    chip.style.display = (mode==='active' && !chip.classList.contains('active')) ? 'none' : '';
+  });
+}
+function compTierToggle(btn){
+  const chips = btn.closest('.comp-tier-section').querySelector('.comp-chips');
+  const collapsed = chips.classList.toggle('collapsed');
+  const zh = btn.querySelector('[data-zh]');
+  const en = btn.querySelector('[data-en]');
+  if(zh) zh.textContent = collapsed ? '展開' : '收合';
+  if(en) en.textContent = collapsed ? 'Expand' : 'Collapse';
+}
+function copyCard(btn){
+  const card = btn.closest('.news-card,.li-card');
+  const title = card.querySelector('.card-title')?.innerText||'';
+  const url   = card.querySelector('a')?.href||'';
+  navigator.clipboard.writeText(title+'\n'+url);
+  btn.textContent='✓';setTimeout(()=>btn.textContent='⎘',1200);
+}
+</script>
+</body>
+</html>
